@@ -44,27 +44,17 @@
 
   car.anchor.set(0.5)
   document.addEventListener("keydown",({code})=>{
-    if(code=="KeyW"){
-      car.N = 0.4;
-    }
-    if(code=="KeyS"){
-      car.N = -0.1;
-    }
-    if(code=="KeyD"){
-      car.R = 1
-    }
-    if(code=="KeyA"){
-      car.R = -1
-    }
+    if(code=="KeyW") car.N = 0.4;
+    if(code=="KeyS") car.N = -0.1;
+    if(code=="KeyD") car.R = 1
+    if(code=="KeyA") car.R = -1
   })
-  document.addEventListener("keyup",({code})=>{
-    if(code=="KeyW" || code=="KeyS"){
-      car.N = 0;
-    }
-    if(code=="KeyD" || code=="KeyA"){
-      car.R = 0;
-    }
 
+  document.addEventListener("keyup",({code})=>{
+    if(code=="KeyW" || code=="KeyS")
+      car.N = 0;
+    if(code=="KeyD" || code=="KeyA")
+      car.R = 0;
   })
   setInterval(()=>{
     let {N,mu,k,u,M,rotation,maxF} = car;
