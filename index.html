@@ -1,84 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>car</title>
-  <script src="./pixi.min.js"></script>
-</head>
-<body>
-  <div id="canv"></div>
-</body>
-<script>
-  const {width, height} = window.screen;
-  const app = new PIXI.Application({
-    width,
-    height,
-    backgroundColor: 0xFFFFFF,
-    resolution: window.devicePixelRatio || 1,
-  });
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>car</title>
+    <script src="./pixi.min.js"></script>
+  </head>
+  <body>
+    <div id="canv"></div>
+  </body>
+  <script>
+    const { width, height } = window.screen;
+    const app = new PIXI.Application({
+      width,
+      height,
+      backgroundColor: 0xffffff,
+      resolution: window.devicePixelRatio || 1,
+    });
 
-  function newSprite(src) {
-    const texture = PIXI.Texture.from(src);
-    const sprite = new PIXI.Sprite(texture);
-    app.stage.addChild(sprite)
-    return sprite;
-  }
-  const map = newSprite("map.png");
-  Object.assign(map,{width,height})
-  const car = newSprite("car.png");
-  Object.assign(car, {
-    width: 25*1.5,
-    height: 15*1.5,
-    x: 100,
-    y: 100,
-    M: 1,
-    mu: 0.005, // friction ratio
-    k: 0.005, // ratio of air resistance 
-    N: 0, // Power 
-    u: 0, 
-    maxF: 1.5, // max Force of engine
-    R:0 // steering wheel turn
-  })
-
-  car.anchor.set(0.5)
-  document.addEventListener("keydown",({code})=>{
-    if(code=="KeyW") car.N = 0.4;
-    if(code=="KeyS") car.N = -0.1;
-    if(code=="KeyD") car.R = 1
-    if(code=="KeyA") car.R = -1
-  })
-
-  document.addEventListener("keyup",({code})=>{
-    if(code=="KeyW" || code=="KeyS")
-      car.N = 0;
-    if(code=="KeyD" || code=="KeyA")
-      car.R = 0;
-  })
-  setInterval(()=>{
-    let {N,mu,k,u,M,rotation,maxF} = car;
-    const {cos,sin, sign} = Math;
-
-    let F = N/u*sign(u)
-    N == 0 && (F = 0) 
-    if(N!=0) {
-      isNaN(F) && (F = maxF*sign(N))
-      F > maxF && (F = maxF)
-      F < -maxF &&  (F = -maxF)
+    function newSprite(src) {
+      const texture = PIXI.Texture.from(src);
+      const sprite = new PIXI.Sprite(texture);
+      app.stage.addChild(sprite);
+      return sprite;
     }
-    
-    let a = (F-k*u)/M-mu*sign(u)
-    u += a;
-    console.log(N,F.toFixed(2),a.toFixed(2),u.toFixed(2))
-    if(u>-0.01 && u<0.01) u=0;
-    car.rotation += Math.PI/24 * car.R;
-    car.x += u*cos(rotation);
-    car.y += u*sin(rotation);
-    car.u = u;
-  },1000/60)
-  document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("canv").appendChild(app.view);
-  });
-</script>
+    const map = newSprite("map.png");
+    Object.assign(map, { width, height });
+    const car = newSprite("car.png");
+    Object.assign(car, {
+      width: 25 * 1.5,
+      height: 15 * 1.5,
+      x: 100,
+      y: 100,
+      M: 1,
+      mu: 0.005, // friction ratio
+      k: 0.005, // ratio of air resistance
+      N: 0, // Power
+      u: 0,
+      maxF: 1.5, // max Force of engine
+      R: 0, // steering wheel turn
+    });
+
+    car.anchor.set(0.5);
+    document.addEventListener("keydown", ({ code }) => {
+      if (code == "KeyW") car.N = 0.4;
+      if (code == "KeyS") car.N = -0.1;
+      if (code == "KeyD") car.R = 1;
+      if (code == "KeyA") car.R = -1;
+    });
+
+    document.addEventListener("keyup", ({ code }) => {
+      if (code == "KeyW" || code == "KeyS") car.N = 0;
+      if (code == "KeyD" || code == "KeyA") car.R = 0;
+    });
+    setInterval(() => {
+      let { N, mu, k, u, M, rotation, maxF } = car;
+      const { cos, sin, sign, PI } = Math;
+
+      let F = (N / u) * sign(u);
+      N == 0 && (F = 0);
+      if (N != 0) {
+        isNaN(F) && (F = maxF * sign(N));
+        F > maxF && (F = maxF);
+        F < -maxF && (F = -maxF);
+      }
+
+      let a = (F - k * u) / M - mu * sign(u);
+      u += a;
+      console.log(N, F.toFixed(2), a.toFixed(2), u.toFixed(2));
+      if (u > -0.01 && u < 0.01) u = 0;
+      car.rotation += (PI / 24) * car.R;
+      car.x += u * cos(rotation);
+      car.y += u * sin(rotation);
+      car.u = u;
+    }, 1000 / 60);
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("canv").appendChild(app.view);
+    });
+  </script>
 </html>
